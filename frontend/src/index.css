@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+
+  @font-face {
+    font-family: small;
+    src: url('Assets/Rejouice-Headline.ttf');
+  }
+
+  @font-face {
+    font-family: heading;
+    src: url('Assets/AquireBold-8Ma60.otf');
+  }
+
+
+ 
+body {
+     /* Prevent default scrollbar and overscroll */
+     /* Ensure full viewport height */
+    font-family: small;
+    background-color: #3D3D42;
+}
+ 
+  h1{
+    font-family: heading;
+  }
+
+ 
+
+
+@keyframes shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-gradient {
+  animation: shine 8s linear  infinite;
+}
+
+
+
+}
+
+

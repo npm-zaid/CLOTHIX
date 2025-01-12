@@ -1,0 +1,63 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family:heading;
+    src: url('Assets/AquireBold-8Ma60.otf');
+  }
+
+  @font-face {
+    font-family:small;
+    src: url('Assets/Rejouice-Headline.ttf');
+  }
+
+  body{
+    font-family: small;
+  }
+
+  h1{
+    font-family:heading;
+  }
+
+
+
+.active{
+    background: #c46e88;
+    color: black;
+}
+
+
+.scroller::-webkit-scrollbar{
+    width: 10px;
+  
+  }
+  
+  /* Track */
+  .scroller::-webkit-scrollbar-track {
+   display: none;
+  }
+   
+  /* Handle */
+  .scroller::-webkit-scrollbar-thumb{
+    background: #27272a; 
+    border-radius: 10px;
+
+    
+    @keyframes shine {
+      0% {
+        background-position: -200% center;
+      }
+      100% {
+        background-position: 200% center;
+      }
+    }
+    
+    .animate-gradient {
+      animation: shine 8s linear  infinite;
+    }
+    
+
+  }
+
