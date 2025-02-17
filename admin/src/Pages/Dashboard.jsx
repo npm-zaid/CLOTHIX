@@ -218,7 +218,7 @@ const Dashboard = ({ token }) => {
         className="flex items-center justify-between bg-zinc-700/50 p-4 rounded-lg hover:bg-zinc-700/30 transition-all duration-300 border border-zinc-700/30 hover:border-[#EEA8B3]/40 shadow-md hover:shadow-lg"
       >
         {/* Left Side */}
-        <div className="flex items-center">
+        <div className="flex items-center sm:flex-row flex-col sm:gap-0 gap-2">
           <div className="w-14 h-14 bg-zinc-700 rounded-xl mr-4 flex items-center justify-center shadow-lg" style={{ borderColor: product.color }}>
             <i className={`${product.icon} text-3xl`} style={{ color: product.color }}></i>
           </div>
