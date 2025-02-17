@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
 import Chart from './Chart'
 import PolarChart from './PolarChart'
+import Circular from '../Components/Circular'
 
 const Report = ({token}) => {
   
@@ -31,6 +32,9 @@ const Report = ({token}) => {
         const totalSales = orders.reduce((sum, order) => sum + order.amount,0)
         const totalOrders = orders.length
         const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0
+        startCountdown(totalSales, "totalSales")
+        startCountdown(totalOrders, "totalOrders")
+        startCountdown(averageOrderValue, "averageOrderValue")
         
         // Count orders by status
         const ordersByStatus = orders.reduce((acc, order) => {
@@ -57,6 +61,27 @@ const Report = ({token}) => {
       toast.error(error.message)
     }
   }
+
+  const startCountdown = (targetValue, key) => {
+    const duration = 2000; // 2 seconds
+    const increment = targetValue / (duration / 16); // 60 FPS
+  
+    let currentValue = 0;
+    const interval = setInterval(() => {
+      currentValue += increment;
+      if (currentValue >= targetValue) {
+        currentValue = targetValue;
+        clearInterval(interval);
+      }
+  
+      // Properly update the state object
+      setReportData(prevState => ({
+        ...prevState,
+        [key]: Math.floor(currentValue)
+      }));
+    }, 16);
+  };
+  
 
   useEffect(() => {
     fetchReportData()
@@ -87,87 +112,80 @@ const Report = ({token}) => {
 
       {/* Summary Cards */}
       <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
-      >
-        <motion.div 
-          whileHover={{ scale: 1.02 }}
-          className="bg-zinc-800/90 p-6 rounded-lg shadow-md border-l-4 border-[#EEA8B3] hover:shadow-xl hover:bg-zinc-800 transition-all duration-300"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm text-zinc-400 flex items-center gap-2">
-                <i className="ri-money-rupee-circle-line text-[#EEA8B3]"></i>
-                Total Sales
-              </h3>
-              <p className="text-2xl font-bold text-white mt-1">₹{(reportData.totalSales/100).toFixed(2)}</p>
-            </div>
-            <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center shadow-lg">
-              <i className="ri-line-chart-fill text-2xl text-[#EEA8B3]"></i>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-zinc-700">
-            <p className="text-sm text-zinc-400 flex items-center gap-1">
-              <i className="ri-arrow-up-circle-line text-green-400"></i>
-              Total revenue generated
-            </p>
-          </div>
-        </motion.div>
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.3, duration: 0.5 }}
+  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8"
+>
+  {[
+    {
+      title: "Total Sales",
+      value: `₹${(reportData.totalSales / 100).toFixed(2)}`,
+      icon: "ri-line-chart-fill",
+      borderColor: "#EEA8B3",
+      bgColor: "bg-[#EEA8B3]/10",
+      desc: "Total revenue generated",
+      descIcon: "ri-arrow-up-circle-line",
+      descColor: "text-green-400"
+    },
+    {
+      title: "Total Orders",
+      value: reportData.totalOrders,
+      icon: "ri-shopping-bag-3-fill",
+      borderColor: "#C46E88",
+      bgColor: "bg-[#C46E88]/10",
+      desc: "Total processed orders",
+      descIcon: "ri-archive-line",
+      descColor: "text-blue-400"
+    },
+    {
+      title: "Average Order Value",
+      value: `₹${(reportData.averageOrderValue / 100).toFixed(2)}`,
+      icon: "ri-funds-box-fill",
+      borderColor: "#EEA8B3",
+      bgColor: "bg-[#EEA8B3]/10",
+      desc: "Average revenue per order",
+      descIcon: "ri-exchange-funds-line",
+      descColor: "text-yellow-400"
+    }
+  ].map((card, index) => (
+    <motion.div 
+      key={index}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.05 }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      className={`bg-zinc-800/80 backdrop-blur-lg p-6 rounded-xl shadow-xl border-l-4 border-[${card.borderColor}] transition-all duration-300 relative overflow-hidden`}
+    >
 
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-zinc-800/90 p-6 rounded-lg shadow-md border-l-4 border-[#C46E88] hover:shadow-xl hover:bg-zinc-800 transition-all duration-300"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm text-zinc-400 flex items-center gap-2">
-                <i className="ri-shopping-cart-2-line text-[#C46E88]"></i>
-                Total Orders
-              </h3>
-              <p className="text-2xl font-bold text-white mt-1">{reportData.totalOrders}</p>
-            </div>
-            <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center shadow-lg">
-              <i className="ri-shopping-bag-3-fill text-2xl text-[#C46E88]"></i>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-zinc-700">
-            <p className="text-sm text-zinc-400 flex items-center gap-1">
-              <i className="ri-archive-line text-blue-400"></i>
-              Total processed orders
-            </p>
-          </div>
-        </motion.div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm text-zinc-400 flex items-center gap-2">
+            <i className={`ri-money-rupee-circle-line text-[${card.borderColor}]`}></i>
+            {card.title}
+          </h3>
+          <p className="text-3xl font-bold text-white mt-2">{card.value}</p>
+        </div>
+        <div className={`w-14 h-14 ${card.bgColor} rounded-xl flex items-center justify-center shadow-lg`}>
+          <i className={`${card.icon} text-3xl`} style={{ color: card.borderColor }}></i>
+        </div>
+      </div>
 
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-zinc-800/90 p-6 rounded-lg shadow-md border-l-4 border-[#EEA8B3] hover:shadow-xl hover:bg-zinc-800 transition-all duration-300"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm text-zinc-400 flex items-center gap-2">
-                <i className="ri-bar-chart-box-line text-[#EEA8B3]"></i>
-                Average Order Value
-              </h3>
-              <p className="text-2xl font-bold text-white mt-1">₹{(reportData.averageOrderValue/100).toFixed(2)}</p>
-            </div>
-            <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center shadow-lg">
-              <i className="ri-funds-box-fill text-2xl text-[#EEA8B3]"></i>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-zinc-700">
-            <p className="text-sm text-zinc-400 flex items-center gap-1">
-              <i className="ri-exchange-funds-line text-yellow-400"></i>
-              Average revenue per order
-            </p>
-          </div>
-        </motion.div>
-      </motion.div>
+      <div className="mt-6 pt-4 border-t border-zinc-700 flex items-center gap-2 text-sm text-zinc-400">
+        <i className={`${card.descIcon} ${card.descColor}`}></i>
+        {card.desc}
+      </div>
+    </motion.div>
+  ))}
+</motion.div>
+
+
+      <Circular totalSales={70} salesTarget={100} totalOrders={50} completedOrders={30} customerRating={4.5} websiteVisitors={100} activeUsers={80} />
 
 
       <Chart></Chart>
       <PolarChart></PolarChart>
+      
 
       {/* Orders by Status */}
       <motion.div 

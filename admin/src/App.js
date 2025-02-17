@@ -260,8 +260,11 @@ const App = () => {
                   <Setting token={token}/>
                 </motion.div>
               } />
+              
             </Routes>
+          
           </AnimatePresence>
+      
         </div>
       </div>
       </>}

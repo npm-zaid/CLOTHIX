@@ -81,6 +81,7 @@ const Cursor = () => {
           stiffness: 50,
           damping: 25,
           mass: 1
+    
         }}
       />
     </>
